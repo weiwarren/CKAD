@@ -1,28 +1,28 @@
 # Chapter 4
 
-adapter container - modify data, ingress
+`adapter container` - modify data, ingress
 
 storage / memory limit will cause container to evict, cpu can be overused.
 
 containers are trasient
 
-LAB
-one per pod
-one per pod
-one per pod
-1
-dns, label, loopback, shared file system, ipc
-monitoring / logging, eg sidecar container
+LAB answer
+- one per pod
+- one per pod
+- one per pod
+- 1
+- dns, label, loopback, shared file system, ipc
+- monitoring / logging, eg sidecar container
 
 # Chapter 5
 
-CSI - container storage interface
+`CSI` - container storage interface
 
-persistent volume - volume plugins, independant lifecycle to pod, provides an API object on top of NFS, iSCSI or cloud storage
+`persistent volume` - volume plugins, independant lifecycle to pod, provides an API object on top of NFS, iSCSI or cloud storage
 
-PersistentVolumeClaim - request for storage by a user like a pod
+`PersistentVolumeClaim` - request for storage by a user like a pod
 
-persistentVolumeReclaimPolicy - Retain, Recycle (deprecated), Delete, dynamic claimed by default is Delete, important data persistency can use Retain
+`persistentVolumeReclaimPolicy` - Retain, Recycle (deprecated), Delete, dynamic claimed by default is Delete, important data persistency can use Retain
 
 encoded data are passed using a Secret - ssh keys, passwords
 
@@ -30,12 +30,12 @@ non-encoded data are passed as ConfigMap - /etc/hosts file
 
 volume can be accessible for multi-container pods or multiple pods. There is no concurrency checking, data corruption is possible
 
-emptyDir:{} is a type of storage created inside consider and gets destroyed with the container lifecycle
+`emptyDir:{}` is a type of storage created inside consider and gets destroyed with the container lifecycle
 
-StorageClass API - allows an admin to define a persistent volume provisioner of a certain type, dynamic provisioning
+`StorageClass API` - allows an admin to define a persistent volume provisioner of a certain type, dynamic provisioning
 
+```
 volumes:
-
 - name: test
   emptyDir: {}
   containers:
@@ -49,12 +49,12 @@ volumes:
   volumeMounts:
   - mountPath: /box
     name: test
-
-rbd volume persists the data when pod is destroyed
+```
+`rbd` volume persists the data when pod is destroyed
 
 `Secrets`
-Secret can be used as environment variable in a Pod, 1MB size
-Secret can also be mounted as volume
+- can be used as environment variable in a Pod, 1MB size
+- can also be mounted as volume
 
 ```
 kubectl get secret
@@ -78,20 +78,20 @@ spec:
 ```
 
 `ConfigMaps` decouples config artifacts from images
-
 - use as env vars
 - used in pod commands
 - populate volumes
 - add configMap data to path in Volume
 
-Config Status
-
+`Config Status`
 - availableReplicas: how many were configured by the replicaset
 - observedGeneration: how often the deployment has been updated
 
+```
 kubectl rollout history
+```
 
-Scaling vs rolling updates
+`Scaling vs rolling updates`
 
 - scaling changes the immutable values such as replicatset, when replicatset = 0, no containers
 - rolling changes the no-immutable values such as version of the container and triggers rolling udpates
@@ -120,14 +120,15 @@ rollback to previous version
 $ kubectl rollout history deployment.v1.apps/nginx-deployment --revision=2
 ```
 
+pause and resume deployments
+```
 kubectl pause
 kubectl resume
+```
 
-- pause and resume deployments
+`Job`
 
-Job
-
-- starts a new job when the first pod fails or deleted
+starts a new job when the first pod fails or deleted
 
 ```
 apiVersion: batch/v1
@@ -147,14 +148,18 @@ spec:
 
 # Chapter 6
 
-Authentication:
-certificates, tokens or basic auth
-Users are managed external to kubernetes
-API access are processed by System accounts
-Webhooks
-OpenID
+`Authentication`
+- certificates, tokens or basic auth
+- Users are managed external to kubernetes
+- API access are processed by System accounts
+- Webhooks
+- OpenID
 
+Process
+
+```
 *Request => API server => 401 => Authorisation => admission control*
+```
 
 `ABAC, RBAC, Webhook`
 
