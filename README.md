@@ -363,3 +363,36 @@ Ingress Controller -> (Services) x n
 ```
 
 
+### Labs ###
+<a name="cheatsheet" href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">Kubernet cheatsheet</a>
+
+get kubernete cluster information
+```
+kubectl cluster-info
+```
+
+port forward from 80 to 8001 on service secondapp
+```
+kubectl port-forward svc/secondapp 8001:80
+```
+
+<span style="color:pink">You need to add yourself as cluster admin before you can add other role bindings</span>
+
+```
+kubectl create clusterrolebinding myname-cluster-admin-binding --clusterrole=cluster-admin --user=warren.wei@pickles.com.au
+```
+add firewall rules for high end port 32000 on gce, this is needed for accessing NodePort
+```
+gcloud compute firewall-rules create myservice --allow tcp:32000
+```
+
+```
+gcloud compute instances list
+```
+
+get nodes external ip address
+```
+kubectl get nodes -o jsonpath='{ $.items[*].status.addresses[?(@.type=="ExternalIP")].address }'
+```
+
+  
