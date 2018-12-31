@@ -2,9 +2,9 @@
 
 `adapter container` - modify data, ingress
 
-storage / memory limit will cause container to evict, cpu can be overused.
+`storage / memory limit` will cause container to evict, cpu can be overused.
 
-containers are trasient
+`containers are trasient`
 
 LAB answer
 - one per pod
@@ -24,11 +24,11 @@ LAB answer
 
 `persistentVolumeReclaimPolicy` - Retain, Recycle (deprecated), Delete, dynamic claimed by default is Delete, important data persistency can use Retain
 
-encoded data are passed using a Secret - ssh keys, passwords
+encoded data are passed using a **Secret** - ssh keys, passwords
 
-non-encoded data are passed as ConfigMap - /etc/hosts file
+non-encoded data are passed as **ConfigMap** - /etc/hosts file
 
-volume can be accessible for multi-container pods or multiple pods. There is no concurrency checking, data corruption is possible
+`Volume` can be accessible for multi-container pods or multiple pods. There is no concurrency checking, data corruption is possible
 
 `emptyDir:{}` is a type of storage created inside consider and gets destroyed with the container lifecycle
 
@@ -161,7 +161,7 @@ Process
 *Request => API server => 401 => Authorisation => admission control*
 ```
 
-`ABAC, RBAC, Webhook`
+### ABAC, RBAC, Webhook ###
 
 ```--authorization-mode=ABAC
 --authorization-mode=RBAC
@@ -171,7 +171,7 @@ Process
 (user,group, namespace, verb)
 ```
 
-### `ABAC` ###
+### ABAC ###
 
 ```
 {
@@ -186,7 +186,7 @@ Process
 }
 ```
 
-###  `RBAC` ###
+### RBAC ###
 
 API Groups - core, apps\
 Roles - group of rules \
@@ -203,7 +203,7 @@ check or create namespace => create cert credentitals => set context for user to
 <a name="f1">1</a>: authentication\
 <a name="f2">2</a>: authorization
 
-### `admission controls` ###
+### `admission controls ###
 
 modify the request content or validate it
 
@@ -213,7 +213,7 @@ modify the request content or validate it
 >*ResourceQuota* controller validate quota limitation
 
 
-### ``` Security Context ``` ###
+### ``` Security Context `` ###
 security policies for processes in the container
 
 <pre>
@@ -230,7 +230,7 @@ spec:<span style="color: red">
 </pre>
 
 
-### ``` Pod Security Policies (PSP) ``` ###
+### ``` Pod Security Policies (PSP) `` ###
 
  cluster level security rules
 
@@ -254,7 +254,7 @@ spec:
 
 PSP + RBAC = fine tuned privileges
 
-### ``` Network Security Policies ``` ###
+### ``` Network Security Policies `` ###
 
 By default all pods can reach each other\
 all ingress and egress traffic is allowed
@@ -299,11 +299,11 @@ spec:
 ```
 
  any pods labeled *role: frontend* with ip ranges 172.17.0.0 to 172.255.255 (except for  172.17.1.\*)  are allowed for outbound traffic on TCP port 8080. 
- ### `namespaceselector??` ###
+ ### `namespaceselector?? ###
 
 Chapter 7
 ===
-### ``Service Type`` ###
+### ``Service Type` ###
 - ClusterIP
   - default
   - inter-cluster communcation
@@ -344,14 +344,14 @@ mode=IPVS  // fastest, more scalable
 mode=userspace
 ```
 
-### `` Labels `` ###
+### `` Labels ` ###
 determines which Pods should receive traffic from service, e.g. in rolling updates, update the pods label first then change the label in the service to match to the pods like version number
 
 ```
 kubectl expose deployment/nginx --port=80 --type=NodePort
 ```
 
-### `` Ingress `` ###
+### `` Ingress ` ###
 
 **Ingress Resource** is API object with a list of HTTP rules matched against all incoming requests for both hosts and path.
 
