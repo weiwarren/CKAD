@@ -148,7 +148,7 @@ spec:
 
 # Chapter 6
 
-`Authentication`
+### Authentication ###
 - certificates, tokens or basic auth
 - Users are managed external to kubernetes
 - API access are processed by System accounts
@@ -158,7 +158,7 @@ spec:
 Process
 
 ```
-*Request => API server => 401 => Authorisation => admission control*
+Request => API server => 401 => Authorisation => admission control
 ```
 
 ### ABAC, RBAC, Webhook ###
@@ -301,6 +301,8 @@ spec:
  any pods labeled *role: frontend* with ip ranges 172.17.0.0 to 172.255.255 (except for  172.17.1.\*)  are allowed for outbound traffic on TCP port 8080. 
  ### namespaceselector?? ###
 
+### Labs ###
+
 Chapter 7
 ===
 ### Service Type ###
@@ -386,6 +388,7 @@ add firewall rules for high end port 32000 on gce, this is needed for accessing 
 gcloud compute firewall-rules create myservice --allow tcp:32000
 ```
 
+list all the node instances
 ```
 gcloud compute instances list
 ```
@@ -395,4 +398,114 @@ get nodes external ip address
 kubectl get nodes -o jsonpath='{ $.items[*].status.addresses[?(@.type=="ExternalIP")].address }'
 ```
 
-  
+Chapter 8
+===
+
+- dig
+- tcpdump
+
+
+General troubleshooting procedures
+
+1. Debugging Pod
+```
+kubectl exec -it <pod> -- /bin/bash
+```
+
+if Pod is ``Pending``, run 
+```
+kubectl describe pod <pod>
+``` 
+generally there is not enough resource to be scheduled, or hostPort is unavailable
+
+is Pod is ``Waitng``, run
+```
+kubectl describe pod <pod>
+``` 
+generally it failed to pull docker image
+
+2. Examine the standard out of container
+```
+kubectl logs <pod> <container>
+
+// alternatively use sidecar
+```
+3. Networking: DNS, firewall, general connectivity were historically the primary causes for issues
+
+4. Security, temporarily disable security for testing 
+    - ``SELinux``: Security-Enhanced Linux is a Linux kernel security module that provides a mechanism for supporting access control security policies, including mandatory access controls (MAC). 
+    - ``AppArmor``: "Application Armor" is a Linux kernel security module that allows the system administrator to restrict programs' capabilities with per-program profiles
+
+**troubleshooting is an ongoing process, where even code or a feature which worked  yesterday may have an issue today**
+
+```
+check pod states => look for error logs => check for resource constraints
+```
+
+- Prometheus: cluster level resource usage metrics
+- Heapster: hirozontal pod auto scaling
+
+### Logging ###
+Kubernetes writes container logs to local files via docker logging driver
+
+``Fluentd`` can be used for cluster level logging and tracing. It runs a each node via DaemonSet and aggregate logs and feed them to ``Elasticsearch`` and visualise via ``Kibana`` dashboar
+
+``Jaeger`` based on ``OpenTracing`` developed by ``Uber`` for [distrbuted context propagation](#f3)
+
+<a name="f3">distributed context propagation</a> - involves associating certain metadata with every request as it enters the system, and propagating that metadata across thread and process boundaries as the request execution fans out to other microservices.
+
+```
+journalctl -a
+
+```
+
+### Labs ###
+```
+Conditions:
+  Type          Status
+  Initialised   True
+  Ready         True
+  PodScheduled  True
+```
+
+get into the container
+```
+kubectl exec -it <pod> -- /bin/bash
+```
+install nslookup packages
+```
+apt-get update && apt-get install dnsutils -y
+```
+
+check dns
+```
+nslookup www.linux.com
+```
+
+netcat
+```
+apt-get install netcat
+```
+
+find linux version
+```
+cat /etc/os-release
+```
+
+verify endpoint is working including namespace, ports and protocols
+```
+kubectl get ep
+```
+```
+kubectl get ep my-nginx -o json
+```
+
+check ``kube-proxy`` is working
+```
+ps -elf |grep kube-proxy
+```
+
+find destination port being
+```
+sudo iptables-save | grep my-nginx
+```
