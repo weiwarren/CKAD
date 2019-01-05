@@ -302,8 +302,11 @@ spec:
  ### namespaceselector?? ###
 
 ### Labs ###
-
-decode network capabilities 
+get the capbilities list
+```
+grep Cap /proc/1/status
+```
+decode network capabilities (use debian jessie instead stretch)
 ```
 capsh --decode=00000000a80425fb
 ```
@@ -621,3 +624,18 @@ min, hour, day,  month, day of month
 
 */ represents frequency instead of a specific time schedule
 ```
+
+check linux version
+```
+cat /etc/os-release
+```
+
+use inbuilt kubectl documentation
+```
+kubectl explain pod --recursive
+```
+
+get node cpu memory utilisation
+```
+ kubectl top nodes
+ ```
