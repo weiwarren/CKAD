@@ -303,6 +303,19 @@ spec:
 
 ### Labs ###
 
+decode network capabilities 
+```
+capsh --decode=00000000a80425fb
+```
+encode password base 64 before saving to secret
+```
+echo LFTr@1n | base64
+```
+get cluster roles
+```
+kubectl get clusterroles
+```
+
 Chapter 7
 ===
 ### Service Type ###
@@ -508,4 +521,103 @@ ps -elf |grep kube-proxy
 find destination port being
 ```
 sudo iptables-save | grep my-nginx
+```
+
+Object configuration
+===
+
+<a href="https://kubernetes.io/docs/concepts/overview/object-management-kubectl/overview/">Object management</a>
+
+Imperative commands
+- single process
+- simple
+- but no source control
+Imperative om
+- works on yaml files
+- source controllable
+- overrides live objects config
+- mature
+Declarative om
+- works on directories (group of yamls files)
+- source controllable
+- changes on live objects are retained
+
+
+Useful commands
+===
+
+
+Run a command and remove the pod after
+```
+kubectl run busybox --image=busybox --rm -it --restart=Never -- echo 'hello world'
+
+or 
+
+kubectl run busybox --image=busybox  --restart=Never -it --rm  -- /bin/sh -c "echo hello"
+```
+
+``--rm`` clean up after
+
+``--restart=Never`` create as pod instead of deployment
+
+``--`` shorthand command
+
+``/bin/sh -c `` execute multiple commands in linux shell
+
+
+---
+Show labels for resources
+```
+kubectl get pods --show-labels
+kubectl get nodes --show-labels
+```
+
+Show the pod specification
+```
+kubectl explain pod.spec
+```
+Annotations
+```
+kubectl annotate [pod] x=y
+```
+
+Iterate and action on pods
+```
+kubectl delete pods nginx{1..3}
+```
+
+
+get replicaset yaml
+```
+ kubectl get rs [replicaset name] --export -o yaml
+```
+
+checkout rollout status of a deployment
+
+```
+kubectl rollout status deploy nginx
+```
+
+get horizontal auto scale
+```
+kubectl get hpa
+```
+
+loop
+```
+
+```
+
+Cronjobs
+<small>excute the job every alternative minute</small>
+```
+kubectl run busybox --image=busybox --restart=OnFailure --dry-run -o yaml --schedule="*/1 * * * *" -- /bin/sh -c "date; echo 'Hello from the kubernete cluster'" >> cronjob.yaml
+```
+
+```
+schedule - is based on unix based Cron schedule
+*     *     *     *       *
+min, hour, day,  month, day of month
+
+*/ represents frequency instead of a specific time schedule
 ```
